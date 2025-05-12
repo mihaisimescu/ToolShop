@@ -59,7 +59,7 @@ test('Send new contact message - empty body', async ({ }) => {
 
 let access_token
 
- test(' Retrieve contact message ', async () => {
+ test(' Retrieve contact message - while logged as admin', async () => {
 
     await test.step('Login as admin', async() => {
         const loginRequest = await apiContext.post(loginURL, 
@@ -98,5 +98,15 @@ let access_token
         expect(jsonMessagesRequest.data[0].message).toEqual(contactBody.message)
         expect(jsonMessagesRequest.data[0].status).toEqual('NEW')
     })
+
+ })
+
+ test('Retrieve contact message - Error not logged', async () => {
+    const messagesRequest = await apiContext.get(contactURL)
+
+    const jsonMessagesRequest = await messagesRequest.json()
+
+    expect(messagesRequest.status()).toBe(401)
+    expect(jsonMessagesRequest.error).toBe("Unauthorized")  
 
  })
