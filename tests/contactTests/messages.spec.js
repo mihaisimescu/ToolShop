@@ -57,11 +57,12 @@ test('Send new contact message - empty body', async ({ }) => {
 
 })
 
+let access_token
 
  test(' Retrieve contact message ', async () => {
 
-    await test.step("Login as admin", async() => {
-        const loginRequest = await apiContext.post('loginURL', 
+    await test.step('Login as admin', async() => {
+        const loginRequest = await apiContext.post(loginURL, 
            { data: bodyLogin }
         )
         const jsonLoginRequest = await loginRequest.json()
@@ -74,20 +75,28 @@ test('Send new contact message - empty body', async ({ }) => {
         expect(jsonLoginRequest.token_type).toEqual('bearer')
     
         expect(jsonLoginRequest.expires_in).toEqual(expect.any(Number))
+
+        access_token = jsonLoginRequest.access_token
     })
 
-    await test.step("get messages", async() => {
-        const messagesRequest = await apiContext.get(contactURL)
+    await test.step('get messages', async() => {
+        const messagesRequest = await apiContext.get(contactURL,
+            { 
+                headers: {
+                    Authorization: `Bearer ${access_token}`
+                }
+            })
+
         const jsonMessagesRequest = await messagesRequest.json()
 
         expect(messagesRequest.ok()).toBeTruthy()
-        expect(jsonMessagesRequest).toEqual(expect.any(Array))
-        expect(jsonMessagesRequest[0].id).toEqual(expect.any(String))
-        expect(jsonMessagesRequest[0].name).toEqual(contactBody.name)
-        expect(jsonMessagesRequest[0].email).toEqual(contactBody.email)
-        expect(jsonMessagesRequest[0].subject).toEqual(contactBody.subject)
-        expect(jsonMessagesRequest[0].message).toEqual(contactBody.message)
-        expect(jsonMessagesRequest[0].status).toEqual('NEW')
+        //expect(jsonMessagesRequest).toEqual(expect.any(Array))
+        expect(jsonMessagesRequest.data[0].id).toEqual(expect.any(String))
+        expect(jsonMessagesRequest.data[0].name).toEqual(contactBody.name)
+        expect(jsonMessagesRequest.data[0].email).toEqual(contactBody.email)
+        expect(jsonMessagesRequest.data[0].subject).toEqual(contactBody.subject)
+        expect(jsonMessagesRequest.data[0].message).toEqual(contactBody.message)
+        expect(jsonMessagesRequest.data[0].status).toEqual('NEW')
     })
 
  })
