@@ -107,6 +107,6 @@ let access_token
     const jsonMessagesRequest = await messagesRequest.json()
 
     expect(messagesRequest.status()).toBe(401)
-    expect(jsonMessagesRequest.error).toBe("Unauthorized")  
+    expect(jsonMessagesRequest.message).toBe("Unauthorized")  
 
  })
