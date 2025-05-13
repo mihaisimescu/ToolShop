@@ -6,12 +6,23 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Test framework, using Playwright and Javascript",
   "dependencies": {
     "playwright": "^1.52.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0",
     "@types/node": "^22.15.17"
-  }
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mihaisimescu/ToolShop.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mihaisimescu/ToolShop/issues"
+  },
+  "homepage": "https://github.com/mihaisimescu/ToolShop#readme"
 }

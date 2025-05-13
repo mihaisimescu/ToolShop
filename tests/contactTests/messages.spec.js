@@ -101,7 +101,7 @@ let access_token
 
  })
 
- test('Retrieve contact message - Error not logged', async () => {
+ test('Retrieve contact message - Error user not logged', async () => {
     const messagesRequest = await apiContext.get(contactURL)
 
     const jsonMessagesRequest = await messagesRequest.json()
