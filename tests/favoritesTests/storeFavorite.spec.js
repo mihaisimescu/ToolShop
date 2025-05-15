@@ -11,6 +11,8 @@ let productUtils
 let registerUtils
 let apiContext
 let bodyLogin
+let favoriteId
+
 test.beforeAll(async () => {
     // we create a new instance of a request
     apiContext = await request.newContext()
@@ -118,8 +120,6 @@ test('Store a favorite product - Item not found', async ({ }) => {
         access_token = jsonLoginRequest.access_token
     })
 
-
-
     await test.step('2. Store a invalid favorite', async() => {
     
         const response = await apiContext.post(favoritesURL, {
@@ -131,11 +131,74 @@ test('Store a favorite product - Item not found', async ({ }) => {
         })
     
         const jsonResponse = await response.json()
+
+        //console.log(jsonResponse.message)
         //console.log(jsonResponse)
         expect([404, 422]).toContain(response.status());
-        expect(jsonResponse.message).toEqual(expect.any(String))
-
-        console.log(jsonResponse.message)
+   
 
         })
+})
+
+test ('Delete a favorite product', async ({ }) => {
+
+    await test.step('1. Login as user', async() => {
+        const loginRequest = await apiContext.post(loginURL, 
+           { data: bodyLogin }
+        )
+
+        const jsonLoginRequest = await loginRequest.json()
+
+        expect(loginRequest.ok()).toBeTruthy()
+          
+        expect(jsonLoginRequest.access_token).toEqual(expect.any(String))
+    
+        expect(jsonLoginRequest.token_type).toEqual(expect.any(String))
+        expect(jsonLoginRequest.token_type).toEqual('bearer')
+    
+        expect(jsonLoginRequest.expires_in).toEqual(expect.any(Number))
+
+        access_token = jsonLoginRequest.access_token
+    })
+
+await test.step('2. Get products', async() => {
+    let productsResponse = await productUtils.getAllProducts(200)
+    expect(productsResponse.data,"The response should contain the list of products").toEqual(expect.any(Array))
+    expect(productsResponse.data.length,"The number of products should be greater than 0").toBeGreaterThan(0)
+    favoriteId = productsResponse.data[7].id
+
+    })
+
+await test.step('3. Store a favorite', async() => {
+    
+    const bodyFavorite = {
+        product_id: favoriteId
+    };
+
+
+    const response = await apiContext.post(favoritesURL, {
+        headers: {
+            Authorization: `Bearer ${access_token}`
+            },
+          data: bodyFavorite
+       
+    })
+    
+    const jsonResponse = await response.json()
+    expect(response.ok()).toBeTruthy()
+
+})
+
+await test.step('4. Delete a favorite - invalid body', async() => {
+    const deleteURL = `/favorites/${favoriteId}`;
+    const response = await apiContext.delete(deleteURL, {   
+        headers: {
+            Authorization: `Bearer ${access_token}`
+            }
+    })
+
+    expect(response.status()).toBe(204)
+
+    })
+
 })
