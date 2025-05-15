@@ -1,5 +1,5 @@
 import { test, expect, request } from '@playwright/test';
-
+import RegisterUtils from '../utils/registerUtils.spec.js';
 
 const registerURL = '/users/register'
 const randomNumber = Math.floor(Math.random() * 1000000) // generate a random number between 0 and 999999
@@ -24,11 +24,19 @@ const bodyRegister = {
 }
 
 let apiContext
+let registerUtils
 
 test.beforeAll(async () => {
     // we create a new instance of a request
     apiContext = await request.newContext()
+    registerUtils = new RegisterUtils(apiContext)
 })
+
+
+test('Register new user - using function', async ({ }) => {
+    await registerUtils.registerUser(201);
+})
+
 
 // to use await function on test, we need to write async
 test('Register new user', async ({ }) => {
@@ -360,4 +368,7 @@ test('Register new user - with empty email field', async ({ }) => {
     expect(jsonRegisterRequest.email).toContain("The email field is required.")
 
 })
+
+
+
 

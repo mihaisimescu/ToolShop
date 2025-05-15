@@ -8,6 +8,7 @@
   "license": "ISC",
   "description": "Test framework, using Playwright and Javascript",
   "dependencies": {
+    "dotenv": "^16.5.0",
     "playwright": "^1.52.0"
   },
   "devDependencies": {
