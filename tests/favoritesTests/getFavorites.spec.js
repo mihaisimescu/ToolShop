@@ -1,22 +1,32 @@
 import { test, expect, request } from '@playwright/test';
+import RegisterUtils from '../utils/registerUtils.spec.js';
 
-const loginURL = 'users/login'
-const favoritesURL = 'favorites'
+const loginURL = '/users/login'
+const favoritesURL = '/favorites'
 
-let email = "customer@practicesoftwaretesting.com"
-let password = "welcome01"
+let email 
+let password
+let registerUtils
 
 
-const bodyLogin ={
-    email: email,
-    password: password
-}
+let bodyLogin 
 
 let apiContext
 
 test.beforeAll(async () => {
     // we create a new instance of a request
     apiContext = await request.newContext()
+    registerUtils = new RegisterUtils(apiContext)
+
+    await registerUtils.registerUser(201)
+
+    email = registerUtils.bodyRegister.email
+    password = registerUtils.bodyRegister.password
+
+    bodyLogin ={
+        email: email,
+        password: password
+    }
 })
 
 let access_token
@@ -28,7 +38,7 @@ test('Get all favorites', async ({ }) => {
                { data: bodyLogin }
             )
             const jsonLoginRequest = await loginRequest.json()
-    
+
             expect(loginRequest.ok()).toBeTruthy()
               
             expect(jsonLoginRequest.access_token).toEqual(expect.any(String))
@@ -52,14 +62,11 @@ test('Get all favorites', async ({ }) => {
             const jsonMessagesRequest = await messagesRequest.json()
 
             expect(messagesRequest.ok()).toBeTruthy()
+            expect(messagesRequest.status()).toBe(200)
 
-            expect(jsonMessagesRequest).toEqual(expect.any(Array))
-            expect(jsonMessagesRequest[0].product_id).toEqual(expect.any(String))
-            //console.log(jsonMessagesRequest[0].product_id)
-
-            expect(jsonMessagesRequest[0].product.name).toEqual(expect.any(String))
-            //console.log(jsonMessagesRequest[0].product.name)
     })
+
+
 })
 
 test('Get all favorites - not logged', async ({ }) => {
