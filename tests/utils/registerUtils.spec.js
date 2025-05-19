@@ -5,6 +5,8 @@ const randomNumber = Math.floor(Math.random() * 1000000);
 let email = `simM${randomNumber}${process.env.EMAIL}`;//process.env.EMAIL
 let password = `${process.env.PASSWORD}${randomNumber}`;//process.env.PASSWORD
 
+let counter = 0;
+
 const bodyRegister = {
     first_name: "John",
     last_name: "Doe",
@@ -252,6 +254,15 @@ export class RegisterUtils {
     async registerUser(statusCode){
         let statusResponse;
         let bodyResponse;
+
+        // Generate a new random number and email for each test
+        const randomNumber = Math.floor(Math.random() * 1000000);
+        const emailForEachTest = `simM${randomNumber}${process.env.EMAIL}`;
+        const passwordForEachTest = `${process.env.PASSWORD}${randomNumber}`;
+
+        // Update the bodyRegister object with the new email and password
+        this.bodyRegister.email = emailForEachTest;
+        this.bodyRegister.password = passwordForEachTest;
 
 
         await test.step('Register new user',async ()=>{
