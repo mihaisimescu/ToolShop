@@ -2,7 +2,13 @@
   "name": "toolshop",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+      "contactTests": "npx playwright test tests/contactTests/",
+      "favoritesTests": "npx playwright test tests/favoritesTests/",
+      "userTests": "npx playwright test tests/userTests/",
+      "allTests": "npx playwright test tests/",
+      "test:report": "playwright show-report"
+    },
   "keywords": [],
   "author": "",
   "license": "ISC",
